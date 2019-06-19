@@ -6,7 +6,7 @@
 
 Using **ModelFacet** requires Matlab (version >=2016), and an .xls file editor.
 
-# How to start an inversion ?
+# How to start an inversion
 
 ## Data and site parameters
 
@@ -16,7 +16,7 @@ The samples data (chemistry and geographical information) and the parameters des
 
 The parameters used for the modeling of <sup>36</sup>Cl concentrations, and the inversion of the data are summurized in the sheet *Parameters* of the file  "**DATA_IN.xlsx**". 
 
-*Parameter of modeling*   
+### Modeling parameters
 - Lambda_f_e : effective fast neutron attenuation coefficient
 - Lambda_f_t  : true fast neutron attenuation coefficient
 - Lambda_mu  : slow muon attenuation length
@@ -33,7 +33,7 @@ The parameters used for the modeling of <sup>36</sup>Cl concentrations, and the 
 - Scaling : Choice of the scaling scheme (1: Time-dependant LAL-STONE with cutoff rigidity, 2: Time-dependant  LSD, 3: Time-independant LAL-STONE 2000 no cutoff)
 - Atm : Choice of the Atmospheric model (0: ERA40 (Uppala et al. 2005), 1: standard atmosphere equation (NOAA 1976))
 
-*Parameter of inversion*       
+### Inversion parameters 
 - Age max : maximum age to compute <sup>36</sup>Cl concentrations produced in sample at depth
 - PG_age_0 : initial guess for post-glacial age
 - SR_0  : initial guess for the fault slip-rate
@@ -77,7 +77,7 @@ The program provide the plot of modeled <sup>36</sup>Cl concentrations of 1000 m
 <img src="Private/36Cl.png" width="600">
 </p>
 
-# Test a forward model
+# How to test a forward model
 To model the <sup>36</sup>Cl concentrations of a given model, indicates the input parameters (slip-rate and post-glacial duration) in the frame *Test a forward model* in the sheet *Parameters* of the xls setting file.
 Run the following command in the *Matlab* window:
 ```
