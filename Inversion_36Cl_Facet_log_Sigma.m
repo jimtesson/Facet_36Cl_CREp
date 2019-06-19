@@ -105,16 +105,16 @@ function [ ] = Inversion_36Cl_Facet_log_Sigma()
     ssfun = @(x0,data_mc) Get_misfit(x0,data_mc);
     
     % Likelihood:
-   logLike=@(m) -data_mc.ns.*0.5.*log(2*pi)-data_mc.ns.*log(m(3))-0.5.*(m(3)^-2).*sum((data_mc.Cl36-forwardmodel(m,data_mc)).^2);
+   logLike=@(m) -data_mc.ns.*0.5.*log(2*pi) -data_mc.ns.*log(m(3)) -0.5.*(m(3)^-2).*sum((data_mc.Cl36-forwardmodel(m,data_mc)).^2);
 
     % Make an initial guess for the model parameters.
     m0=[ParamUser.Denud_0 ParamUser.PG_age_0]';
     % 36Cl error is also a parameter
     sigma=std(data_mc.Cl36-forwardmodel(m0,data_mc));
-    m0=[m0 ; log(sigma)];
+    m0=[m0 ; sigma];
 
     % Prior information
-    logprior = @(m)(m(1)>ParamUser.SRmin)&(m(1)<ParamUser.SRmax)&(m(2)>ParamUser.Tmin)&(m(2)<ParamUser.Tmax)&(m(3)>0)&(m(3)<17);
+    logprior = @(m)(m(1)>ParamUser.SRmin)&(m(1)<ParamUser.SRmax)&(m(2)>ParamUser.Tmin)&(m(2)<ParamUser.Tmax)&(m(3)>0);
     
 %% test_forward: compute theoretical 36Cl for a given model
 
@@ -155,13 +155,13 @@ function [ ] = Inversion_36Cl_Facet_log_Sigma()
     while i<ParamUser.n_walker
         tmp(1)=ParamUser.SRmin+rand(1,1).*(ParamUser.SRmax-ParamUser.SRmin);
         tmp(2)=ParamUser.Tmin+rand(1,1).*(ParamUser.Tmax-ParamUser.Tmin);
-        tmp(3)=log(exp(m0(3))+(rand(1,1)-0.5).*sigma);
+        tmp(3)=m0(3)+(rand(1,1)-0.5).*sigma;
         if(logprior(tmp)==1)
             i=i+1;
             ball(1,i)=tmp(1);
             ball(2,i)=tmp(2);
             ball(3,i)=tmp(3); 
-            fprintf ( 1, 'model:%i -> Slip-rate = %4.2f, Post-glacial duration = %6.0f, 36Cl uncert = %2.1f x10^5\n',i,ball(1,i),ball(2,i),exp(ball(3,i)).*1E-5);
+            fprintf ( 1, 'model:%i -> Slip-rate = %4.2f, Post-glacial duration = %6.0f, 36Cl uncert = %2.1f x10^5\n',i,ball(1,i),ball(2,i),ball(3,i).*1E-5);
 
         end
 
@@ -199,7 +199,7 @@ function [ ] = Inversion_36Cl_Facet_log_Sigma()
 
 % Corner plot of parameters
     figure
-    ecornerplot(m2,'ks',true,'color',[0 0 0],'names',{'SR' 'T_PG' 'log(\sigma)'})
+    ecornerplot(m2,'ks',true,'color',[0 0 0],'names',{'SR' 'T_PG' 'sigma'})
 
 %% Statistics
     fprintf ( 1, 'Statistics from the inversion:\n' );
@@ -212,8 +212,8 @@ function [ ] = Inversion_36Cl_Facet_log_Sigma()
         ParamUser.T_std = std(reshape(m2(2,:,:), 1, [])); % yr
 
     % [36Cl] Error
-        Error_36_mean = exp(mean(reshape(m2(3,:,:), 1, []))); % at/gr
-        Error_36_std = exp(std(reshape(m2(3,:,:), 1, []))); % at/gr
+        Error_36_mean = mean(reshape(m2(3,:,:), 1, [])); % at/gr
+        Error_36_std = std(reshape(m2(3,:,:), 1, [])); % at/gr
         
     % Print results    
         fprintf ( 1, '\t -> Fault slip-rate:\n' );
@@ -259,7 +259,6 @@ function [ ] = Inversion_36Cl_Facet_log_Sigma()
         Y = [Data.Alt(:) Data.Alt(:)]' ;
         plot(X,Y,'-k')
         for kk=1:Nb_samples
-            Data.Alt(kk)
             % plot 36Cl concentration
             plot(Data.NuclCon(kk),Data.Alt(kk),'ko','MarkerFaceColor','black')
             %plot(N36(:,kk),ones(length(N36(:,kk))).*Data.Alt(kk),'ro')
