@@ -55,13 +55,13 @@ To run an inversion of <sup>36</sup>Cl concentrations, use the following command
 > Inversion_36Cl_Facet
 
 After the inversion, check the Markov chain autocorellation plot to be sure the algorithm has converged and produced uncorrelated models. Be sure the proportion of models removed from the chains is large enough to remove the whole burnin period.
-![BLABAL](Private/ACM.PNG)
+![BLABAL](Private/ACM.png)
 
 The program will also produce the posterior pdf plot for each parameters:
 ![BLABAL](Private/PDF.PNG)
 
 The program provide the plot of modeled <sup>36</sup>Cl concentrations of 1000 models randomly selected in the Markov chains.
-![BLABAL](Private/36Cl.PNG)
+![BLABAL](Private/36Cl.png)
 
 # Test a forward model
 To model the <sup>36</sup>Cl concentrations of a given model, indicates the input parameters (slip-rate and post-glacial duration) in the frame *Test a forward model* in the sheet *Parameters* of the xls setting file.
@@ -69,4 +69,4 @@ Run the following command in the *Matlab* window:
 > Inversion_36Cl_Facet
 
 
-![BLABAL](Private/forward_model.PNG)
+![BLABAL](Private/forward_model.png)
