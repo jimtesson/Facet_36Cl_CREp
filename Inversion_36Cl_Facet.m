@@ -12,94 +12,43 @@ function [ ] = Inversion_36Cl_Facet()
     load('Constants/OtherCst.mat');
     
 %% Loading data
-    Data = Load_data_36('INPUT/DATA_IN.xlsx');
+    [Data,ParamUser] = Load_data_36('Input/DATA_IN.xlsx');
     
-%% Parameters given by user
-    NumGMDB = 1; % 1: Mush; 2: GLOPIS; 3: LSD; 4: own user geomagnetic db
-    Scheme = 3; % time dependant scaling model (1: LAL-STONE with cutoff rigidity, 2: LSD, 3: LAL-STONE 2000 no cutoff)
-    Muon_model = 1; % 1: Exponential, 2: numeric integration of the flux (Balco 2008)
-    Atm = 0; % 0: ERA40 (Uppala et al. 2005), 1: standard atmosphere equation (NOAA 1976)
-    Data.GMDB = 1;
-    
-    Age_max = 300000; % maximum age (yr) to compute 36Cl produced in sample
-    
-    PG_age_0 = 20000; % initial guess for post-glacial age (yr)
-    Denud_0 = 1.0; % initial guess for the fault slip-rate (mm/yr)
-    
-    SRmin = 0; % Inversion minimum slip-rate bound (mm/yr)
-    SRmax = 5; % Inversion maximum slip-rate bound (mm/yr)
-    SR_std = 1;
-    
-    Tmin = 5000; % Inversion minimum post-glacial age bound (yr)
-    Tmax = 30000; % Inversion maximim post-glacial age bound (yr)
-    T_std = 2000;
-    
-    n_walker=10; % number of chain
-    n_models_inversion = 20000; % number of models generated during the inversion
-    parallel_computing = true; % inversion is operated using parallel computing (true, false)
-    
-    test = 0; % test a forward model ?
-    % input parameters to test a forward model
-    sr = 2.8; % mm/yr
-    tpg = 32000; % yr
-    
-%% Some constants
-    % 36Cl
-    Data.lambda36 = 2.303e-6 ;
-    Data.lambda36_uncert = Data.lambda36 .* 0.0066;
-
-    % Attenuation length
-    Data.Lambda_f_e = 160; % effective fast neutron attenuation coefficient (g.cm-2)
-    Data.Lambda_f_t = 208; % TRUE fast neutron attenuation coefficient (g.cm-2)
-    Data.Lambda_mu = 1510 ; % slow muon attenuation length (g.cm-2)
-    Data.Psi_mu_0 = 190 ; % slow negative muon stopping rate at land surface (muon/g/an), Heisinger et al. (2002)
-
-    % Unscaled sample specific 36Cl production rate by spallation of target elements
-    Data.Psi_Cl36_Ca_0 = 42.2 ;% spallation production rate for Ca, SLHL (at of Cl36 /g of Ca per yr)
-    Data.Psi_Cl36_K_0 = 148.1 ;% Spallation production rate at surface of 39K (at of Cl36 /g of Ca per yr)
-    Data.Psi_Cl36_Ti_0 = 13 ; % Spallation production rate at surface of Ti (at of Cl36 /g of Ca per yr)
-    Data.Psi_Cl36_Fe_0 = 1.9 ; % Spallation production rate at surface of Fe (at of Cl36 /g of Ca per yr)
-    %uncertainties
-    Data.Psi_Cl36_Ca_0_uncert = 4.8 ;% spallation production rate for Ca, SLHL (at of Cl36 /g of Ca per yr)
-    Data.Psi_Cl36_K_0_uncert = 7.8 ;% Spallation production rate at surface of 39K (at of Cl36 /g of Ca per yr)
-    Data.Psi_Cl36_Ti_0_uncert = 3 ; % Spallation production rate at surface of Ti (at of Cl36 /g of Ca per yr)
-    Data.Psi_Cl36_Fe_0_uncert = 0.2 ; % Spallation production rate at surface of Fe (at of Cl36 /g of Ca per yr) 
-
-%% Set Atmospheric and Geomagnetic parameters
+%% Set ParamUser.Atmospheric and Geomagnetic parameters
 
     disp('Computing parameters')
-    Data.Atm = Atm;% atmospheric model
+    Data.Atm = ParamUser.Atm;% ParamUser.Atmospheric model
         
     % Geomagnetic data base
     if length(Data.GMDB)==1;
-        %NumGMDB = 2; % 1: Mush; 2: GLOPIS; 3: LSD; 4: own user geomagnetic db
-        if NumGMDB==1;
+        %ParamUser.NumGMDB = 2; % 1: Mush; 2: GLOPIS; 3: LSD; 4: own user geomagnetic db
+        if ParamUser.NumGMDB==1;
             SelGMDB=GMDB.Musch;
-        elseif NumGMDB==2;
+        elseif ParamUser.NumGMDB==2;
             SelGMDB=GMDB.GLOPIS;
-        else %  (NumGMDB=3)
+        else %  (ParamUser.NumGMDB=3)
             SelGMDB=GMDB.LSD;
         end
     else
-        NumGMDB=4;
+        ParamUser.NumGMDB=4;
         SelGMDB=Data.GMDB;
     end
 
 %% Set the muon model
-    if(Muon_model == 1)
+    if(ParamUser.Muon_model == 1)
         flag.muon = 'exp';  % Muon attenuation length approximated by exponential (Schimmelfenning 2009).  
-   elseif(Muon_model == 2)
+   elseif(ParamUser.Muon_model == 2)
         flag.muon = 'num'; % Muon attenuation length calculated following Heisinger (2002a,b) and Balco et al. (2008)
     else
         Mess=sprintf('Invlid muon model');
     end
 %% Set the Scaling model
-    if(Scheme == 1)
-        flag.scaling_model = 'st'; % LAL-STONE scheme cutoff rigidy
-    elseif(Scheme == 2)
-        flag.scaling_model = 'sa'; % LSD scheme
-    elseif(Scheme == 3)
-        flag.scaling_model = 'st2000'; % LAL-STONE scheme 2000 (no cuttoff)
+    if(ParamUser.Scheme == 1)
+        flag.scaling_model = 'st'; % LAL-STONE ParamUser.Scheme cutoff rigidy
+    elseif(ParamUser.Scheme == 2)
+        flag.scaling_model = 'sa'; % LSD ParamUser.Scheme
+    elseif(ParamUser.Scheme == 3)
+        flag.scaling_model = 'st2000'; % LAL-STONE ParamUser.Scheme 2000 (no cuttoff)
     else
         Mess=sprintf('Invlid scaling model');
     end  
@@ -112,8 +61,8 @@ function [ ] = Inversion_36Cl_Facet()
 %% Compute scaling factors
     %w = 0.2; % water content for Sato & Niita (2006)
     w = -1; % water content =  default value
-    flag.NumGMDB = NumGMDB;
-    Sf = Func_Sf(Param_site,Data,Atm,w,SelGMDB,flag);
+    flag.NumGMDB = ParamUser.NumGMDB;
+    Sf = Func_Sf(Param_site,Data,ParamUser.Atm,w,SelGMDB,flag);
     
 %% Compute production rates
     Param_cosmo = clrock(Data_formatted,Param_site,Const_cosmo,Sf);
@@ -140,9 +89,10 @@ function [ ] = Inversion_36Cl_Facet()
     data_mc.Shf = Shf;
     data_mc.dataset = dataset;
     data_mc.Z_samples = Z_samples;
-    data_mc.Age_max = Age_max;
+    data_mc.Age_max = ParamUser.Age_max;
     data_mc.flag = flag;
     data_mc.Cl36 = dataset(1,:);
+    data_mc.Cl36_uncer = data_mc.dataset(2,:);
     data_mc.flag = flag;
     
 %% Parameters of the MCMc Inversion
@@ -158,57 +108,69 @@ function [ ] = Inversion_36Cl_Facet()
     % First we define a helper function equivalent to calling log(normpdf(x,mu,sigma))
     % but has higher precision because it avoids truncation errors associated with calling 
     % log(exp(xxx)).
-    lognormpdf=@(x,mu,sigma)-0.5*((x-mu)./sigma).^2  -log(sqrt(2*pi).*sigma);
-    logLike=@(m)sum(lognormpdf(data_mc.Cl36,forwardmodel(m,data_mc),exp(m(3))));
+    
+
+    %lognormpdf=@(x,mu,sigma)-0.5*((x-mu)./sigma).^2  -log(sqrt(2*pi).*sigma);
+    %logLike=@(m)sum(lognormpdf(data_mc.Cl36,forwardmodel(m,data_mc),exp(m(3))));
+    
+    logLike=@(m)log((2*pi)^-0.5.*sum(1./data_mc.Cl36_uncer)* exp(-ssfun(m,data_mc)/2));
 
     % Make an initial guess for the model parameters.
-    m0=[Denud_0 PG_age_0]';
+    m0=[ParamUser.Denud_0 ParamUser.PG_age_0]';
     % 36Cl error is also a parameter
-    sigma=std(data_mc.Cl36-forwardmodel(m0,data_mc));
-    m0=[m0 ; log(sigma)];
+    %sigma=std(data_mc.Cl36-forwardmodel(m0,data_mc));
+    %m0=[m0 ; log(sigma)];
 
     % Prior information
-    logprior = @(m)(m(1)>SRmin)&(m(1)<SRmax)&(m(2)>Tmin)&(m(2)<Tmax);
+    logprior = @(m)(m(1)>ParamUser.SRmin)&(m(1)<ParamUser.SRmax)&(m(2)>ParamUser.Tmin)&(m(2)<ParamUser.Tmax);
     
-%% Test: compute theoretical 36Cl for a given model
-    disp('Test forward model')
-    if(test == 1)
-        % test ssfun
-        ssfun(m0,data_mc)
-        % test logLike
-        logLike(m0)
-        % model 36Cl
-        N_36 = Model_direct_36Facet([sr tpg],data_mc);
-        
-        figure(3)
-        % plot modelled 36Cl concentrations
-        plot(N_36,Data.Alt-Data.alt_scarp_top,'o'); hold on
-        % plot measured 36Cl concentrations
-        plot(Data.NuclCon,Data.Alt-Data.alt_scarp_top,'o')
-        return
-    end
-%% Initial sampling
-    m_var(1)=SR_std;
-    m_var(2)=T_std;
-    m_var(3)=log(sigma*0.1); 
-    
-    ball=zeros(3,n_walker); 
-    tmp=zeros(3,1);
-    disp('Initializing Inversion')
-    disp('First we initialize the ensemble of walkers in a small gaussian ball')
-    disp(['number of walkers: ' num2str(n_walker)])
+%% test_forward: compute theoretical 36Cl for a given model
 
+    if(ParamUser.test_forward == 1)
+        fprintf( 1, '\t -> Test a model:\n \t Slip-rate = %f\n\tPost-glacial duration = %f\n',ParamUser.sr,ParamUser.tpg);
+        % ParamUser.test_forward ssfun
+        ssfun(m0,data_mc);
+        % ParamUser.test_forward logLike
+        logLike(m0);
+        % model 36Cl
+        N_36 = Model_direct_36Facet([ParamUser.sr ParamUser.tpg],data_mc);
+        
+        figure
+        % plot modelled 36Cl concentrations
+        plot(N_36,Data.Alt,'o'); hold on
+        % plot measured 36Cl concentrations
+            % error bar coordinates on measurments
+            X = [Data.NuclCon-Data.NuclErr Data.NuclCon+Data.NuclErr]' ;
+            Y = [Data.Alt(:) Data.Alt(:)]' ;
+        plot(Data.NuclCon,Data.Alt,'ko','MarkerFaceColor','black')
+        plot(X,Y,'-k')
+        ax_x = xlim; xlim([0 ax_x(2)])
+        title(sprintf('Slip-rate = %2.1f mm/yr, Post-glacial duration = %2.0f kyr',ParamUser.sr,ParamUser.tpg/1000))
+        xlabel('36Cl concentration (at/gr)') 
+        ylabel('Altitude of the sample') 
+        legend('model','data','Location','southeast')
+
+    else
+%% Initial sampling
+    
+    ball=zeros(2,ParamUser.n_walker); 
+    tmp=zeros(2,1);
+    disp('Initializing Inversion')
+    disp('First we initialize the ensemble of walkers')
+    disp(['-> number of walkers: ' num2str(ParamUser.n_walker)])
+    disp('-> guess models: ')
     i=0;
-    while i<n_walker
-        tmp(1)=m0(1)+randn(1,1).*m_var(1);
-        tmp(2)=m0(2)+randn(1,1).*m_var(2);
-        tmp(3)=m0(3)+randn(1,1).*m_var(3); 
+    while i<ParamUser.n_walker
+        tmp(1)=ParamUser.SRmin+rand(1,1).*(ParamUser.SRmax-ParamUser.SRmin);
+        tmp(2)=ParamUser.Tmin+rand(1,1).*(ParamUser.Tmax-ParamUser.Tmin);
+        %tmp(3)=log(exp(m0(3))+(rand(1,1)-0.5).*sigma);
         if(logprior(tmp)==1)
             i=i+1;
             ball(1,i)=tmp(1);
             ball(2,i)=tmp(2);
-            ball(3,i)=tmp(3); 
-            disp([num2str(i) ' ' num2str(ball(1,i)) ' ' num2str(ball(2,i)) ' ' num2str(ball(3,i))])
+            %ball(3,i)=tmp(3); 
+            fprintf ( 1, 'model:%i -> Slip-rate = %4.2f, Post-glacial duration = %6.0f\n',i,ball(1,i),ball(2,i));
+
         end
 
     end
@@ -221,7 +183,7 @@ function [ ] = Inversion_36Cl_Facet()
 %
     disp(['Starting Inversion'])
 
-    m=gwmcmc(ball,{logprior logLike},n_models_inversion,'burnin',0,'Parallel',parallel_computing);
+    m=gwmcmc(ball,{logprior logLike},ParamUser.n_models_inversion,'burnin',0,'Parallel',ParamUser.parallel_computing);
 
     save('Results/results_gwmcmc.mat')
     
@@ -236,9 +198,9 @@ function [ ] = Inversion_36Cl_Facet()
     title('Markov Chain Auto Correlation')
 
 % Remove BurnIn period
-    BurnIn = 0.2; % Percent of the chain removed, must be >= 0 and <100
+    ParamUser.BurnIn = 0.2; % Percent of the chain removed, must be >= 0 and <100
     L_chain = length(m(1,1,:)); % length of the chains
-    crop=ceil(L_chain*BurnIn); % number of models removed
+    crop=ceil(L_chain*ParamUser.BurnIn); % number of models removed
     m2 = m; % copy the results
     m2(:,:,1:crop)=[]; % removed models
     
@@ -251,44 +213,50 @@ function [ ] = Inversion_36Cl_Facet()
     fprintf ( 1, 'Statistics from the inversion:\n' );
     % SR
         SR_mean = mean(reshape(m2(1,:,:), 1, [])); % mm/yr
-        SR_std = std(reshape(m2(1,:,:), 1, [])); % mm/yr
+        ParamUser.SR_std = std(reshape(m2(1,:,:), 1, [])); % mm/yr
 
     % PG Age
         T_mean = mean(reshape(m2(2,:,:), 1, [])); % yr
-        T_std = std(reshape(m2(2,:,:), 1, [])); % yr
+        ParamUser.T_std = std(reshape(m2(2,:,:), 1, [])); % yr
 
     % [36Cl] Error
-        Error_36_mean = exp(mean(reshape(m2(3,:,:), 1, []))); % at/gr
-        Error_36_std = exp(std(reshape(m2(3,:,:), 1, []))); % at/gr
+%         Error_36_mean = exp(mean(reshape(m2(3,:,:), 1, []))); % at/gr
+%         Error_36_std = exp(std(reshape(m2(3,:,:), 1, []))); % at/gr
         
     % Print results    
         fprintf ( 1, '\t -> Fault slip-rate:\n' );
         fprintf ( 1, '\t\t mean : %2.3f mm/yr\n',SR_mean);
-        fprintf ( 1, '\t\t st. dev. : %2.3f mm/yr\n',SR_std);
+        fprintf ( 1, '\t\t st. dev. : %2.3f mm/yr\n',ParamUser.SR_std);
         
         fprintf ( 1, '\t -> Post-glacial duration:\n' );
         fprintf ( 1, '\t\t mean : %6.0f yr\n',T_mean);
-        fprintf ( 1, '\t\t st. dev. : %6.0f yr\n',T_std);
+        fprintf ( 1, '\t\t st. dev. : %6.0f yr\n',ParamUser.T_std);
+        
+%         fprintf ( 1, '\t -> 36Cl error (x10^5):\n' );
+%         fprintf ( 1, '\t\t mean : %6.0f at. 36Cl/gr\n',Error_36_mean*1E-5);
         
  %% Plot 36Cl Profile
     fprintf ( 1, 'Generating plot \n');
-        % initialize some variables
-        Nb_samples = length(Z_samples); % number of cosmogenic samples
-        N_stat = 1000; % number of samples randomly picked to draw 36Cl concentrations
-        N36=zeros(1000,Nb_samples); % number of cosmogenic samples
         
         % flatten m
         m3 = m(:,:)';
+        
+        % initialize some variables
+        Nb_samples = length(Z_samples); % number of cosmogenic samples
+        if(ParamUser.N_stat>length(m3)) 
+            ParamUser.N_stat = length(m3); % number of samples randomly picked to draw 36Cl concentrations
+        end
+        N36=zeros(1000,Nb_samples); % number of cosmogenic samples
         
         % Progress Bar anonymous function
         progress=@textprogress2;
 
         % Get 36Cl concentration from 1000 random models generated by the inversion
-        for kk=1:N_stat
+        for kk=1:ParamUser.N_stat
             r=ceil(rand*size(m3,1));
             model=forwardmodel(m3(r,:),data_mc);
             N36(kk,:)=model;
-            progress(kk/N_stat)
+            progress(kk/ParamUser.N_stat)
         end
         
         % Let's plot the models
@@ -299,10 +267,12 @@ function [ ] = Inversion_36Cl_Facet()
         Y = [Data.Alt(:) Data.Alt(:)]' ;
         plot(X,Y,'-k')
         for kk=1:Nb_samples
+            Data.Alt(kk)
             % plot 36Cl concentration
             plot(Data.NuclCon(kk),Data.Alt(kk),'ko','MarkerFaceColor','black')
+            %plot(N36(:,kk),ones(length(N36(:,kk))).*Data.Alt(kk),'ro')
             % Compute pdf
-            [F,X,~]=ksdensity(N36(kk,:));
+            [F,X,~]=ksdensity(N36(:,kk));
             X=X([1,1:end,end]);F=[0,F,0];
             %Scale pdf to altitude plot
             dalt=5;
@@ -314,9 +284,13 @@ function [ ] = Inversion_36Cl_Facet()
             xl = xlim; xl(1)=.0; xlim(xl);
             % set transparency
             alpha(.5); 
+            title(sprintf('Mean slip-rate = %2.1f mm/yr, Mean Post-glacial duration = %2.0f kyr',SR_mean,T_mean/1000))
+            xlabel('36Cl concentration (at/gr)') 
+            ylabel('Altitude of the sample') 
             
             % save all
             save('Results/results_gwmcmc.mat')
+    end
 end
 
 function textprogress2(pct)
