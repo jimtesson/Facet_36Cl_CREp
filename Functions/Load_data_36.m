@@ -4,7 +4,7 @@ function [ Data,Param ] = Load_data_36(file_name)
 % import data
 
     % import data
-    [~,tmp1,raw] = xlsread(file_name,'Sample');
+    [~,tmp1,raw] = xlsread(file_name,1);
     % number of Samples
     [ns,~]= size(tmp1);
     ns= ns-1;
@@ -93,7 +93,7 @@ function [ Data,Param ] = Load_data_36(file_name)
 
 %% Site parameters
     % import data
-    [~,~,raw] = xlsread(file_name,'Parameters');
+    [~,~,raw] = xlsread(file_name,2);
 
     Data.alt_scarp_top = cell2mat(raw(2,2)); 
     Data.alpha = cell2mat(raw(3,2)); 

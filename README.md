@@ -60,21 +60,21 @@ Inversion_36Cl_Facet
 After the inversion, check the Markov chain autocorellation plot to be sure the algorithm has converged and produced uncorrelated models. Be sure the proportion of models removed from the chains is large enough to remove the whole burnin period.
 
 <p align="center">
-<img src="Private/ACM.png" width="600">
+<img src="README_files/ACM.png" width="600">
 </p>
 
 ### Posterior probability density plot : 
 The program will also produce the posterior pdf plot for each parameters:
 
 <p align="center">
-<img src="Private/PDF.PNG" width="600">
+<img src="README_files/PDF.PNG" width="600">
 </p>
 
 ### Posterior probability density of modeled <sup>36</sup>Cl concentrations : 
 The program provide the plot of modeled <sup>36</sup>Cl concentrations of 1000 models randomly selected in the Markov chains.
 
 <p align="center">
-<img src="Private/36Cl.png" width="600">
+<img src="README_files/36Cl.png" width="600">
 </p>
 
 # How to test a forward model
@@ -84,5 +84,5 @@ Run the following command in the *Matlab* window:
 Inversion_36Cl_Facet
 ```
 <p align="center">
-<img src="Private/forward_model.png" width="600">
+<img src="README_files/forward_model.png" width="600">
 </p>

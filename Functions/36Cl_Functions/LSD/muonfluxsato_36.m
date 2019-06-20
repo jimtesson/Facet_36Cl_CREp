@@ -165,12 +165,12 @@ R_vert_site = R_vert_slhl.*Rz;
 %    phi_vert_site = arrayfun(func_integ,z,tol);
 
     zz = [z max(z)+10:10:2e5+1]; % integrate from 0 to 200,001 g/cm2
-    zz = flip(zz); % flip zz to integrate from depth to z
+    zz = fliplr(zz); % fliplr zz to integrate from depth to z
     y = Rv0(zz).*ppval(RzSpline,zz); % function to integrate
     tmp = cumtrapz(zz,y); % cumulative integration from 200,001 g/cm2  to z
     % put the zz and integrated values in increasing zz values
-    tmp = -flip(tmp); 
-    zz = flip(zz);
+    tmp = -fliplr(tmp); 
+    zz = fliplr(zz);
     % keep values for which z<maxdepth
     izz = find(zz<=max(z));
     phi_vert_site = tmp(izz);

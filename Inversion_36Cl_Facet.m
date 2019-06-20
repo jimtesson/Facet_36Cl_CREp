@@ -129,12 +129,14 @@ function [ ] = Inversion_36Cl_Facet()
     if(ParamUser.test_forward == 1)
         fprintf( 1, '\t -> Test a model:\n \t Slip-rate = %f\n\tPost-glacial duration = %f\n',ParamUser.sr,ParamUser.tpg);
         % ParamUser.test_forward ssfun
-        ssfun(m0,data_mc);
+        %ssfun(m0,data_mc);
         % ParamUser.test_forward logLike
-        logLike(m0);
+        %logLike(m0);
         % model 36Cl
         N_36 = Model_direct_36Facet([ParamUser.sr ParamUser.tpg],data_mc);
         
+        fprintf( 1, '\t -> RMSw=%f \t Likelog = %f\t\n',ssfun(m0,data_mc),logLike(m0));
+
         figure
         % plot modelled 36Cl concentrations
         plot(N_36,Data.Alt,'o'); hold on
@@ -149,7 +151,7 @@ function [ ] = Inversion_36Cl_Facet()
         xlabel('36Cl concentration (at/gr)') 
         ylabel('Altitude of the sample') 
         legend('model','data','Location','southeast')
-
+        saveas(gcf,'Results/36Cl_forwardmodel.fig')
     else
 %% Initial sampling
     
@@ -196,7 +198,7 @@ function [ ] = Inversion_36Cl_Facet()
     ylabel('autocorrelation');
     text(lags(end),0,sprintf('Effective Sample Size (ESS): %.0f_ ',ceil(mean(ESS))),'verticalalignment','bottom','horizontalalignment','right')
     title('Markov Chain Auto Correlation')
-
+    saveas(gcf,'Results/ACM.fig')
 % Remove BurnIn period
     ParamUser.BurnIn = 0.2; % Percent of the chain removed, must be >= 0 and <100
     L_chain = length(m(1,1,:)); % length of the chains
@@ -208,7 +210,7 @@ function [ ] = Inversion_36Cl_Facet()
 % Corner plot of parameters
     figure
     ecornerplot(m2,'ks',true,'color',[0 0 0],'names',{'SR' 'T_PG' 'log(\sigma)'})
-
+    saveas(gcf,'Results/PDF.fig')
 %% Statistics
     fprintf ( 1, 'Statistics from the inversion:\n' );
     % SR
@@ -267,7 +269,7 @@ function [ ] = Inversion_36Cl_Facet()
         Y = [Data.Alt(:) Data.Alt(:)]' ;
         plot(X,Y,'-k')
         for kk=1:Nb_samples
-            Data.Alt(kk)
+
             % plot 36Cl concentration
             plot(Data.NuclCon(kk),Data.Alt(kk),'ko','MarkerFaceColor','black')
             %plot(N36(:,kk),ones(length(N36(:,kk))).*Data.Alt(kk),'ro')
@@ -287,7 +289,8 @@ function [ ] = Inversion_36Cl_Facet()
             title(sprintf('Mean slip-rate = %2.1f mm/yr, Mean Post-glacial duration = %2.0f kyr',SR_mean,T_mean/1000))
             xlabel('36Cl concentration (at/gr)') 
             ylabel('Altitude of the sample') 
-            
+            saveas(gcf,'Results/36Cl_PDF.fig')
+
             % save all
             save('Results/results_gwmcmc.mat')
     end
