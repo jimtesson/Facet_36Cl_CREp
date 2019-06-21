@@ -228,11 +228,11 @@ function [ ] = Inversion_36Cl_Facet()
     % Print results    
         fprintf ( 1, '\t -> Fault slip-rate:\n' );
         fprintf ( 1, '\t\t mean : %2.3f mm/yr\n',SR_mean);
-        fprintf ( 1, '\t\t st. dev. : %2.3f mm/yr\n',ParamUser.SR_std);
+        fprintf ( 1, '\t\t st. dev. : %2.3f mm/yr\n',SR_std);
         
         fprintf ( 1, '\t -> Post-glacial duration:\n' );
         fprintf ( 1, '\t\t mean : %6.0f yr\n',T_mean);
-        fprintf ( 1, '\t\t st. dev. : %6.0f yr\n',ParamUser.T_std);
+        fprintf ( 1, '\t\t st. dev. : %6.0f yr\n',T_std);
         
 %         fprintf ( 1, '\t -> 36Cl error (x10^5):\n' );
 %         fprintf ( 1, '\t\t mean : %6.0f at. 36Cl/gr\n',Error_36_mean*1E-5);
