@@ -133,7 +133,7 @@ function [ Data,Param ] = Load_data_36(file_name)
     Param.Age_max = cell2mat(raw(26,2)); % maximum age (yr) to compute 36Cl produced in sample
     
     Param.PG_age_0 = cell2mat(raw(27,2)); % initial guess for post-glacial age (yr)
-    Param.Denud_0 = cell2mat(raw(28,2)); % initial guess for the fault slip-rate (mm/yr)
+    Param.SR_0 = cell2mat(raw(28,2)); % initial guess for the fault slip-rate (mm/yr)
     
     Param.SRmin = cell2mat(raw(29,2)); % Inversion minimum slip-rate bound (mm/yr)
     Param.SRmax = cell2mat(raw(30,2)); % Inversion maximum slip-rate bound (mm/yr)

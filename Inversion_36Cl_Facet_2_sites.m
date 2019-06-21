@@ -138,7 +138,7 @@ function [ ] = Inversion_36Cl_Facet_2_sites()
     logLike=@(m)log((2*pi)^-0.5.*sum(1./[data_mc_1.Cl36_uncer data_mc_2.Cl36_uncer])* exp(-(ssfun([m(1) m(3)],data_mc_1)+ssfun([m(2) m(3)],data_mc_2))/2));
 
     % Make an initial guess for the model parameters.
-    m0=[ParamUser_1.Denud_0 ParamUser_2.Denud_0 ParamUser_1.PG_age_0]';
+    m0=[ParamUser_1.SR_0 ParamUser_2.SR_0 ParamUser_1.PG_age_0]';
 
     % Prior information
     logprior = @(m)(m(1)>ParamUser_1.SRmin) & (m(1)<ParamUser_1.SRmax) ...

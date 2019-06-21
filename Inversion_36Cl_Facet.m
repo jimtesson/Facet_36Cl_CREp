@@ -116,7 +116,7 @@ function [ ] = Inversion_36Cl_Facet()
     logLike=@(m)log((2*pi)^-0.5.*sum(1./data_mc.Cl36_uncer)* exp(-ssfun(m,data_mc)/2));
 
     % Make an initial guess for the model parameters.
-    m0=[ParamUser.Denud_0 ParamUser.PG_age_0]';
+    m0=[ParamUser.SR_0 ParamUser.PG_age_0]';
     % 36Cl error is also a parameter
     %sigma=std(data_mc.Cl36-forwardmodel(m0,data_mc));
     %m0=[m0 ; log(sigma)];
