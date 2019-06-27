@@ -37,7 +37,8 @@ dtheta = pi/180 ;
 
 % Portion of rock above the vertical of the colluvial wedge top (measured
 % along the fault-plane)
-Z_above_coll = A/(cos(gamma)/sin(gamma)-cos(beta)/cos(pi/2-beta)); %
+    Z_above_coll = A/(cos(gamma)/sin(gamma)-cos(beta)/cos(pi/2-beta)); % maximum Z above the colluvial wedge
+    Z_above_coll = Z_above_coll/tan(gamma)/cos(beta)-A/cos(beta);% Z projected along the fault-plane
 
 % Angle from vetical to the top of the colluvial wedge.
 beta_topcoll=acos((A-(cos(beta)*Z))/(((tan(beta)*(cos(beta)*Z))^2+(A-(cos(beta)*Z))^2)^0.5));

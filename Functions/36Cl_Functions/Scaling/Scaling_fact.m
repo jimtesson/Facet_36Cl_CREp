@@ -1,19 +1,15 @@
 function [Lambda_sc,So] = Scaling_fact(rho_rock,rho_coll,Lambda, A, alpha, beta, gamma,Z)
-
-
-%% geometry of the fault and the facet
-
-alpha = alpha; % slope of the colluvial wedge
-beta = beta; % dip of the fault-plane
-gamma = gamma; % slope of the upper peri-glacial surface
+% alpha: slope of the colluvial wedge
+% beta: dip of the fault-plane
+% gamma: slope of the upper peri-glacial surface
 
 Z(Z==0) = 0.0001;
 %% test scsurf_facet
     
     d_fault = A; %  Horizontal distance from the samples to the fault-plane (cm)
     
-    Z_above_coll = A/(cos(gamma)/sin(gamma)-cos(beta)/cos(pi/2-beta))*100; % maximum Z above the colluvial wedge
-    %Z_below_coll = zmax_1.*100 - Z_above_coll;
+    Z_above_coll = A/(cos(gamma)/sin(gamma)-cos(beta)/cos(pi/2-beta)); % maximum Z above the colluvial wedge
+    Z_above_coll = Z_above_coll/tan(gamma)/cos(beta)-A/cos(beta);% Z projected along the fault-plane
 
     S_1 = zeros(1,length(Z));
     

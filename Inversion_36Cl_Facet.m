@@ -77,7 +77,8 @@ function [ResultStat] = Inversion_36Cl_Facet()
         plot_36Cl_profile(N_36,Data,ParamUser);
         % print results
         fprintf( 1, '\t -> RMSw=%f \t Likelog = %f\t\n',ssfun(m0,data_mc),logLike(m0));
-        
+        save('Results/results_gwmcmc.mat')
+        test = 1;
     else
         
 %% Initial sampling of models for inversion
@@ -305,12 +306,12 @@ function ParamUser_out = SetUserChoices(Data,ParamUser_in)
             ParamUser_in.SelGMDB=GMDB.Musch;
         elseif ParamUser_in.NumGMDB==2
             ParamUser_in.SelGMDB=GMDB.GLOPIS;
-        else %  (ParamUser.NumGMDB=3)
+        elseif ParamUser_in.NumGMDB==3
             ParamUser_in.SelGMDB=GMDB.LSD;
+        else
+            load('Constants/GMDB_own.mat');
+            ParamUser_in.SelGMDB=GMDB_own.GMDB;
         end
-    else
-        ParamUser_in.NumGMDB=4;
-        ParamUser_in.SelGMDB=Data.GMDB;
     end
 
 %% Set the muon model
