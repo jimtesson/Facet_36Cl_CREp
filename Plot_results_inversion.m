@@ -12,13 +12,14 @@ function [ResultStat] = Plot_results_inversion()
     
 %% Loading data
     [Data,ParamUser] = Load_data_36('Input/DATA_IN.xlsx');
-    
+    % number of site 
+    n_site = Data{1}.n_site;
 % Check Autocorrelation 
     PlotAutocorrelation(m)
     
 % Remove BurnIn period
     L_chain = length(m(1,1,:)); % length of the chains
-    crop=ceil(L_chain*ParamUser.BurnIn); % number of models removed
+    crop=ceil(L_chain*ParamUser{1}.BurnIn); % number of models removed
     % crop chain
     m_crop = m; % copy the results
     m_crop(:,:,1:crop)=[]; % removed models
@@ -29,12 +30,13 @@ function [ResultStat] = Plot_results_inversion()
     PlotCorner(m_crop)
 
 %% Statistics
-    n_site = length(m_crop(:,1,1))-1;
+
     ResultStat = GetStatistics(m_crop,n_site);
  
 %% Plot results from the inversion
-    Plot_inversion_results(1,m_flat,Data,ParamUser,data_mc)
-
+    for i =1: n_site
+    Plot_inversion_results(i,m_flat,Data{i},ParamUser{i},data_mc{i})
+    end
 end
 
 function ResultStat = GetStatistics(m_crop,nsite)
