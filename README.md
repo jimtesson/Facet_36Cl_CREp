@@ -103,7 +103,7 @@ Inversion_36Cl_Facet
 </p>
 
 
-# How to plot results from an inversion
+# How to plot results from an inversion ?
 
 If needed, the results from an inversion can be plotted again using the following command:
 ```
