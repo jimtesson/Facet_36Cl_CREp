@@ -6,15 +6,24 @@
 
 Using **ModelFacet** requires Matlab (version >=2016), and an .xls file editor.
 
-# How to start an inversion
+# How to run an inversion ?
 
 ## Data and site parameters
 
-The samples data (chemistry and geographical information) and the parameters describing the site, must be provided by the user in the excel sheet named "**DATA_IN.xlsx**", localized in the "*Input*" folder. The excel file is composed of two sheet. The sheet *Sample* allow the user to provide the chemistry analysis of each sample, including <sup>36</sup>Cl concentration, major and traces, and the localization information. The geometry of the facet has to be provided in the sheet *Parameters*.
+The samples data (chemistry and geographical information) and the parameters describing the site, must be provided by the user in the excel sheet named "**DATA_IN.xlsx**", localized in the "*Input*" folder. The sheet *Parameters* is common to all sites, and describes the geometry of each site, the model and inversion parameters. The name of each site must be provided in this sheet. The chemistry of the samples must be given for each site in a sheet. Each sheet must be called by the name of the site *NameOfTheSite*. This name must corresponds to the site name in the *Parameters* site. It allows the user to provide the chemistry analysis of each sample for a site, including <sup>36</sup>Cl concentration, major and traces, and the localization information. 
 
 ## Parameters for the modeling and the Inversion
 
 The parameters used for the modeling of <sup>36</sup>Cl concentrations, and the inversion of the data are summurized in the sheet *Parameters* of the file  "**DATA_IN.xlsx**". 
+
+### Parameters of each site
+- number of site : **must be the altitude of the post-glacial scarp top**
+- name of the site : **must corresponds to the name of the sheet describing the chemistry of the site**
+- Altitude of the site (m)
+- Colluvial wedge slope (°)
+- Fault-plane dip (°)
+- Slope of the facet (°)
+- Colluvial wedge density (g/cm2)
 
 ### Modeling parameters
 - Lambda_f_e : effective fast neutron attenuation coefficient
@@ -49,18 +58,23 @@ The parameters used for the modeling of <sup>36</sup>Cl concentrations, and the 
 - N_burnin  :  proportion of the chain removed, must be >= 0 and <1.
 - n_plot  : number of samples randomly picked to draw <sup>36</sup>Clconcentrations pdf from the inversion
 
+<p align="center">
+<img src="README_files/XLS_screen.png" width="600">
+</p>
+
 ## Running a data inversion
 
 To run an inversion of <sup>36</sup>Cl concentrations, use the following command in the *Matlab* window:
 ```
 Inversion_36Cl_Facet
 ```
+Results of the inversion are placed in  *Results/results_gwmcmc.mat*
 
 ### Autocorellation plot : 
 After the inversion, check the Markov chain autocorellation plot to be sure the algorithm has converged and produced uncorrelated models. Be sure the proportion of models removed from the chains is large enough to remove the whole burnin period.
 
 <p align="center">
-<img src="README_files/ACM.png" width="600">
+<img src="README_files/ACM.PNG" width="600">
 </p>
 
 ### Posterior probability density plot : 
@@ -77,7 +91,8 @@ The program provide the plot of modeled <sup>36</sup>Cl concentrations of 1000 m
 <img src="README_files/36Cl.png" width="600">
 </p>
 
-# How to test a forward model
+
+# How to test a forward model ?
 To model the <sup>36</sup>Cl concentrations of a given model, indicates the input parameters (slip-rate and post-glacial duration) in the frame *Test a forward model* in the sheet *Parameters* of the xls setting file.
 Run the following command in the *Matlab* window:
 ```
@@ -86,3 +101,13 @@ Inversion_36Cl_Facet
 <p align="center">
 <img src="README_files/forward_model.png" width="600">
 </p>
+
+
+# How to plot results from an inversion
+
+If needed, the results from an inversion can be plotted again using the following command:
+```
+Plot_results_inversion.m
+```
+Be sure the results from the inversion are present in the *Result* folder (file  *results_gwmcmc.mat* ).
+

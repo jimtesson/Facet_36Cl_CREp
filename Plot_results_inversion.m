@@ -14,6 +14,13 @@ function [ResultStat] = Plot_results_inversion()
     [Data,ParamUser] = Load_data_36('Input/DATA_IN.xlsx');
     % number of site 
     n_site = Data{1}.n_site;
+    % string name of the site
+    nameSite = cell(1,n_site+1);
+    for i=1:n_site
+      nameSite{i} = Data{i}.site_name;
+    end
+    nameSite{n_site+1} = 'Tpg';
+    
 % Check Autocorrelation 
     PlotAutocorrelation(m)
     
@@ -27,7 +34,7 @@ function [ResultStat] = Plot_results_inversion()
     m_flat = m_crop(:,:)';
     
 % Corner plot of parameters
-    PlotCorner(m_crop)
+    PlotCorner(m_crop,nameSite)
 
 %% Statistics
 
@@ -161,8 +168,8 @@ function PlotAutocorrelation(m)
     saveas(gcf,'Results/ACM.fig')
 end
 
-function PlotCorner(m)
+function PlotCorner(m,nameSite)
     figure
-    ecornerplot(m,'ks',true,'color',[0 0 0],'names',{'SR' 'T_PG' 'log(\sigma)'})
+    ecornerplot(m,'ks',true,'color',[0 0 0],'names',nameSite)
     saveas(gcf,'Results/PDF.fig')
 end

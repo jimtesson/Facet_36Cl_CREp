@@ -149,23 +149,24 @@ function [ Data_out, Param_out ] = Load_data_36(file_name)
 
         Param.SRmin = raw_param{30,2}; % Inversion minimum slip-rate bound (mm/yr)
         Param.SRmax = raw_param{31,2}; % Inversion maximum slip-rate bound (mm/yr)
-        Param.SR_std = raw_param{32,2};
 
-        Param.Tmin = raw_param{33,2}; % Inversion minimum post-glacial age bound (yr)
-        Param.Tmax = raw_param{34,2}; % Inversion maximim post-glacial age bound (yr)
-        Param.T_std = raw_param{35,2};
 
-        Param.n_walker = raw_param{36,2}; % number of chain
-        Param.n_models_inversion = raw_param{37,2}; % number of models generated during the inversion
-        Param.parallel_computing = logical(cell2mat(raw_param(38,2))); % inversion is operated using parallel computing (true, false)
+        Param.Tmin = raw_param{32,2}; % Inversion minimum post-glacial age bound (yr)
+        Param.Tmax = raw_param{33,2}; % Inversion maximim post-glacial age bound (yr)
+ 
 
-        Param.BurnIn = raw_param{39,2}; % ( >=0 and <1) Proportion of the chain removed, must be >= 0 and <100
-        Param.N_stat = raw_param{40,2}; % number of samples randomly picked to draw 36Cl concentrations from the inversion chain
+        Param.n_walker = raw_param{34,2}; % number of chain
+        Param.n_models_inversion = raw_param{35,2}; % number of models generated during the inversion
+        Param.parallel_computing = logical(cell2mat(raw_param(36,2))); % inversion is operated using parallel computing (true, false)
 
-        Param.test_forward = cell2mat(raw_param(43,2)); % test a forward model ?
+        Param.BurnIn = raw_param{37,2}; % ( >=0 and <1) Proportion of the chain removed, must be >= 0 and <100
+        Param.N_stat = raw_param{38,2}; % number of samples randomly picked to draw 36Cl concentrations from the inversion chain
+
+        Param.test_forward = cell2mat(raw_param(41,2)); % test a forward model ?
+        Param.tpg = cell2mat(raw_param(42,2)); % yr  
         % input parameters to test a forward model
         Param.sr = cell2mat(raw_param(44,k+1)); % mm/yr
-        Param.tpg = cell2mat(raw_param(45,2)); % yr  
+
         
         Data_out{k} = Data;
         Param_out{k} = Param;
