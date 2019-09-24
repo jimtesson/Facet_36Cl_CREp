@@ -10,7 +10,7 @@ Using **ModelFacet** requires Matlab (version >=2016), and an .xls file editor.
 
 ## Data and site parameters
 
-The samples data (chemistry and geographical information) and the parameters describing the site, must be provided by the user in the excel sheet named "**DATA_IN.xlsx**", localized in the "*Input*" folder. The sheet *Parameters* is common to all sites, and describes the geometry of each site, the model and inversion parameters. The name of each site must be provided in this sheet. The chemistry of the samples must be given for each site in a sheet. Each sheet must be called by the name of the site *NameOfTheSite*. This name must corresponds to the site name in the *Parameters* site. It allows the user to provide the chemistry analysis of each sample for a site, including <sup>36</sup>Cl concentration, major and traces, and the localization information. 
+The samples data (chemistry and geographical information) and the parameters describing the site, must be provided by the user in the excel file named "**DATA_IN.xlsx**", saved in the "*Input*" folder. The sheet *Parameters* in this file is common to all sites, and describes the geometry of each site the inversion parameters, and the model. The name of each site must be provided in this sheet. The chemistry of the samples must be given for each site in a separate sheet. Each sheet must be called by the name of the site *NameOfTheSite*. This name must corresponds to the site name entered in the *Parameters* site. It allows the user to provide the chemistry analysis of each sample for a site, including <sup>36</sup>Cl concentration, major and traces, and the localization information. 
 
 ## Parameters for the modeling and the Inversion
 
@@ -71,10 +71,17 @@ Inversion_36Cl_Facet
 Results of the inversion are placed in  *Results/results_gwmcmc.mat*
 
 ### Autocorellation plot : 
-After the inversion, check the Markov chain autocorellation plot to be sure the algorithm has converged and produced uncorrelated models. Be sure the proportion of models removed from the chains is large enough to remove the whole burnin period.
+After the inversion, check the Markov chain autocorellation plot to be sure the algorithm has converged and produced uncorrelated models. 
 
 <p align="center">
 <img src="README_files/ACM.PNG" width="600">
+</p>
+
+### Burning period plot : 
+Be sure the proportion of models removed from the chains is large enough to remove the whole burnin period. Models from the burning period are figured in red in the plot. The burning period is the period during which the chains are converging, starting from high misfit area and reaching a stable behavior. After the burning period, the chain should sample the parameter space following a distribution that will corresponds to the final posterior distribution.
+
+<p align="center">
+<img src="README_files/Burnin.png" width="600">
 </p>
 
 ### Posterior probability density plot : 
@@ -93,7 +100,7 @@ The program provide the plot of modeled <sup>36</sup>Cl concentrations of 1000 m
 
 
 # How to test a forward model ?
-To model the <sup>36</sup>Cl concentrations of a given model, indicates the input parameters (slip-rate and post-glacial duration) in the frame *Test a forward model* in the sheet *Parameters* of the xls setting file.
+To model the <sup>36</sup>Cl concentrations of a given model, indicates the input parameters (slip-rate and post-glacial duration) in the boxes *Test a forward model* in the sheet *Parameters* of the DATA_IN.xlsx setting file.
 Run the following command in the *Matlab* window:
 ```
 Inversion_36Cl_Facet

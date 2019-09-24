@@ -133,9 +133,9 @@ function [ResultStat] = Inversion_36Cl_Facet()
     
 %% Parameters of the MCMc Inversion
 
-    % function providing the misfit for a single site
-    ssfun = @(x0,thedata_mc) Get_misfit(x0,thedata_mc);
-    
+    % function providing the misfit
+    ssfun = @(x0,data_mc) Get_misfit(x0,data_mc);    
+
     % get the vector of all 36Cl uncertainties
     std_36Cl_er = [];
     for i = 1:n_site
@@ -157,11 +157,11 @@ function [ResultStat] = Inversion_36Cl_Facet()
     m0=[m0 ParamUser{1}.PG_age_0]';
     
     % Prior information
-    str_test = ['(m(1)>ParamUser{1}.SRmin) & (m(1)<ParamUser{1}.SRmax)'];
+    str_test = ['(m(1)>=ParamUser{1}.SRmin) & (m(1)<=ParamUser{1}.SRmax)'];
     for i = 2:n_site
-       str_test = [str_test sprintf(' & (m(%d)>ParamUser{%d}.SRmin) & (m(%d)<ParamUser{%d}.SRmax)',i,i,i,i)];
+       str_test = [str_test sprintf(' & (m(%d)>=ParamUser{%d}.SRmin) & (m(%d)<=ParamUser{%d}.SRmax)',i,i,i,i)];
     end
-    str_test = [str_test sprintf(' & (m(%d)>ParamUser{1}.Tmin) & (m(%d)<ParamUser{1}.Tmax);',n_site+1,n_site+1)];
+    str_test = [str_test sprintf(' & (m(%d)>=ParamUser{1}.Tmin) & (m(%d)<=ParamUser{1}.Tmax);',n_site+1,n_site+1)];
     
     logprior = eval(sprintf('@(m) %s',str_test)); % the log prior
     
@@ -172,16 +172,20 @@ function [ResultStat] = Inversion_36Cl_Facet()
         fprintf( 1, '\t -> Test a model:\n')
         for i = 1:n_site
             fprintf( 1, '\t \t SR site %i = %f mm/yr\n',i,ParamUser{i}.sr);
+            
         end
         fprintf( 1, '\t \t Post-glacial duration = %f yr\n',ParamUser{1}.tpg);
         
         RMSw_all = .0;
         
+        
         for i = 1:n_site
             % get 36Cl concentration
+            data_mc{i}.flag.plotP = 1;
             N_36_site = Model_direct_36Facet([ParamUser{i}.sr  ParamUser{i}.tpg],data_mc{i});
+            data_mc{i}.flag.plotP = 0;
             % get the RMSw for each site
-            RMSw_site = ssfun(m0,data_mc{i});
+            RMSw_site = Get_misfit([ParamUser{i}.sr  ParamUser{i}.tpg],data_mc{i});
             % Get the total RMSw of all site
             RMSw_all = RMSw_all + RMSw_site;
             fprintf( 1, '\t -> RMSw site %i=%f \n',i,RMSw_site);

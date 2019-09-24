@@ -26,6 +26,22 @@ function [ N_36 ] = Model_direct_36Facet(x0,data_mc)
 % describing the pathway of the sample 
 % over the time from depth to surface
 
+% TEST MODE
+%     t_period = 30000;
+%     time_vec = (0:dt:Age_max-dt);
+%     %figure;plot(time_vec,-(sr_vec.*cos(time_vec./30000.*pi)-sr_vec))
+%     sr_vec = zeros(1, length(time_vec));
+%     %sr_vec = -(SR*1e-1.*cos(time_vec./t_period.*pi)-SR*1e-1);
+%     %sr_vec(time_vec>Age_PG & time_vec<50000)=0.015;
+%     sr_vec(time_vec<=Age_PG)=0.0;
+%     %plot(time_vec,sr_vec)
+%     sr_vec_cum = cumsum(sr_vec.*dt);
+%     %plot(time_vec,sr_vec_cum)
+%     
+%     t_vector = fliplr(time_vec); % time vector
+%     z_history = fliplr(sr_vec_cum); % depth vector : position of the sample below the surface along the plane parallel to the fault-plane
+%     
+%    plot(t_vector,z_history)
     Age_max = Age_max-Age_PG;
     T_expo_Glacial=fliplr((0:dt:Age_max-dt));
     SR = SR*1e-1; %(cm/yr)

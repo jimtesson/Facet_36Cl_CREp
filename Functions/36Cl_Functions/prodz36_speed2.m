@@ -47,7 +47,7 @@ if(flag.muon == 'exp') % if muon attenuation at depth are scaled by exponential 
    % Muon production rate
     P36_mu = sf.currentsf.SFmu .* Param_cosmo.Y_Sigma.*Const_cosmo.Psi_mu_0.*expfactor_mu;
    %depth independent variables for muon-produced neutrons
-    P_mu = sf.currentsf.SFmu.*(Param_cosmo.Y_s*Const_cosmo.Psi_mu_0 + 5.8e-6*Const_cosmo.phi_mu_f_0);
+    P_mu = sf.currentsf.SFmu.*(Param_cosmo.Y_s*Const_cosmo.Psi_mu_0 + 5.8e-6*Const_cosmo.phi_mu_f_0).*ones(size(expfactor_mu));
    %depth dependent variables for muon-produced neutrons     
    	P_mu_depth = sf.currentsf.SFmu.*(Param_cosmo.Y_s*Const_cosmo.Psi_mu_0 + 5.8e-6*Const_cosmo.phi_mu_f_0) ...
                         .*expfactor_mu;
@@ -111,7 +111,7 @@ end
     Deltaphi_star_th = phi_star_th_a - phi_star_th ; % difference between hypothetical equilibrium thermal neutron fluxes in atmosphere and ss
 
     % portion of difference between phi_star_th,ss and actual flux due to thermal flux profile
-    JDeltaphi_star_th = (Param_cosmo.D_th_a.*(phi_star_th_a/Lambda_f_e - JDeltaphi_star_eth_a./Param_cosmo.L_eth_a) ...
+    JDeltaphi_star_th = (Param_cosmo.D_th_a.*(phi_star_th_a./Lambda_f_e - JDeltaphi_star_eth_a./Param_cosmo.L_eth_a) ...
    - Param_cosmo.DD_th.*(phi_star_th./Lambda_f_e + JDeltaphi_star_eth./Param_cosmo.L_eth) ...
    + (Param_cosmo.D_th_a./Param_cosmo.L_th_a).*(Deltaphi_star_th + JDeltaphi_star_eth_a - JDeltaphi_star_eth)) ...
    ./ ((Param_cosmo.DD_th./Param_cosmo.L_th) + (Param_cosmo.D_th_a./Param_cosmo.L_th_a)) ; 
